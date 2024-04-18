@@ -25,7 +25,7 @@ void *SecondaMeta(void *par)
 int main()
 {
   pthread_t threadA, threadB;
-  int array[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  int array[10] = {8, 2, 3, 4, 5, 6, 7, 8, 9, 8};
   int *firstHalf = array;
   int *secondHalf = array + 5;
   pthread_create(&threadA, NULL, &PrimaMeta, (void *)firstHalf);
