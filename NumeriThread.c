@@ -12,7 +12,7 @@ void *PrimaMeta(void *par)
     }
   }
 }
-void *SecondaMeta(void *par)
+/*void *SecondaMeta(void *par)
 {
   int *secondHalf = (int *)par;
   for (int i = 0; i < 5; i++)
@@ -21,15 +21,15 @@ void *SecondaMeta(void *par)
       printf("posizione %d\n", i+5);
     }
   }
-}
+}*/
 int main()
 {
   pthread_t threadA, threadB;
   int array[10] = {8, 2, 3, 4, 5, 6, 7, 8, 9, 8};
   int *firstHalf = array;
   int *secondHalf = array + 5;
-  pthread_create(&threadA, NULL, &PrimaMeta, (void *)firstHalf);
-  pthread_create(&threadB, NULL, &SecondaMeta, (void *)secondHalf);
+  pthread_create(&threadA, NULL, &PrimaMeta, firstHalf);
+  pthread_create(&threadB, NULL, &PrimaMeta, secondHalf);
   pthread_join(threadB, NULL);
   pthread_join(threadA, NULL);
   return 0;

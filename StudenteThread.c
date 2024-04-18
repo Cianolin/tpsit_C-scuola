@@ -14,10 +14,7 @@ void *stampaStudente(void *par)
 {
     //Studente *s2 = (Studente *)par; // converte il void in studente puntatore
     Studente s2= *(Studente*)par;
-    printf("\n%s\n", s2.name);
-    printf("%s\n", s2.lastname);
-    printf("%d\n", s2.media);
-    printf("%d\n", s2.class);
+    printf("\n%s\n%s\n%d\n%d\n", s2.name,s2.lastname,s2.media,s2.class);
     pthread_exit(NULL);
 }
 void *salvaStudente(void *par)
@@ -39,7 +36,8 @@ int main(int argc, char *argv[])
     s1.media = atoi(argv[3]);
     s1.class = atoi(argv[4]);
     void *sPuntore = &s1;                                      // converto la strct studente in void puntatore
-    pthread_create(&threadA, NULL, &stampaStudente, sPuntore); // crea threadA viene assegnato la stampa dei dati dello stundete
+    //pthread_create(&threadA, NULL, &stampaStudente, sPuntore); // crea threadA viene assegnato la stampa dei dati dello stundete
+     pthread_create(&threadA, NULL, &stampaStudente, s1); 
     pthread_create(&threadB, NULL, &salvaStudente, sPuntore);  // crea threadB salva la struct dello studente salva i dati
     pthread_join(threadA, NULL);
     pthread_join(threadB, NULL);
