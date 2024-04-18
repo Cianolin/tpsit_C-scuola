@@ -10,22 +10,26 @@ typedef struct
     int class;
     int media;
 } Studente;
-void *stampaStudente(void* par)
+void *stampaStudente(void *par)
 {
-    Studente *s2 = (Studente *)par;//converte il void in studente puntatore
-    printf("\n%s\n", s2->name);
-    printf("%s\n", s2->lastname);
-    printf("%d\n", s2->class);
-    printf("%d\n", s2->media);
+    //Studente *s2 = (Studente *)par; // converte il void in studente puntatore
+    Studente s2= *(Studente*)par;
+    printf("\n%s\n", s2.name);
+    printf("%s\n", s2.lastname);
+    printf("%d\n", s2.media);
+    printf("%d\n", s2.class);
+    pthread_exit(NULL);
 }
-void *salvaStudente (void* par)
+void *salvaStudente(void *par)
 {
-    FILE*file=fopen("studente.txt", "wb");
-    Studente* s3 = (Studente* )par;stampaStudente
-    fwrite(&s3, sizeof(s3), 1, file);//scrive nel file la struct studente
-    fclose(file);//chiude il file
+    FILE *file = fopen("studente.txt", "w");
+    Studente *s3 = (Studente *)par;
+    // fwrite(&s3, sizeof(s3), 1, file);//scrive nel file la struct studente
+    fprintf(file, "%s\n%s\n%d\n%d", s3->name, s3->lastname, s3->class, s3->media);
+    fclose(file); // chiude il file
     printf("Scrittura fatta\n");
-}stampaStudente
+    pthread_exit(NULL);
+}
 int main(int argc, char *argv[])
 {
     Studente s1;
@@ -34,9 +38,9 @@ int main(int argc, char *argv[])
     strcpy(s1.lastname, argv[2]);
     s1.media = atoi(argv[3]);
     s1.class = atoi(argv[4]);
-    void* sPuntore = &s1;//converto la strct studente in void puntatore
-    pthread_create(&threadA, NULL, &stampaStudente, sPuntore);//crea threadA viene assegnato la stampa dei dati dello stundete
-    pthread_create(&threadB, NULL, &salvaStudente, sPuntore);//crea threadB salva la struct dello studente salva i dati
+    void *sPuntore = &s1;                                      // converto la strct studente in void puntatore
+    pthread_create(&threadA, NULL, &stampaStudente, sPuntore); // crea threadA viene assegnato la stampa dei dati dello stundete
+    pthread_create(&threadB, NULL, &salvaStudente, sPuntore);  // crea threadB salva la struct dello studente salva i dati
     pthread_join(threadA, NULL);
     pthread_join(threadB, NULL);
     return 0;
