@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <pthread.h>
-oid *PrimaMeta(void *par)
+void *PrimaMeta(void *par)
 {
   int *firstHalf = (int *)par;
   for (int i = 0; i < 5; i++)
