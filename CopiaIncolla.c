@@ -20,8 +20,7 @@ void *Leggi(void *origine)
     FILE*file=(FILE*)origine;
     while (!feof(origine))
     {
-        while (N_block>= BUFFER_SIZE)
-        {
+        while (N_block>= BUFFER_SIZE);
             int n=fread(ring_buffer[write_index].Buffer,1, BUFFER_Dim, file);
             if (n>0)
             {
@@ -29,13 +28,11 @@ void *Leggi(void *origine)
                 write_index= (write_index+1)% BUFFER_SIZE;
                 N_block++;
             }
-            
-        }
     }
     eof = true;
     pthread_exit(NULL);
 }
-void *Scrivi(FILE *destinazione)
+void *Scrivi(void *destinazione)
 {
     FILE*file=(FILE*)destinazione;
     while (!eof || N_block>0)
@@ -47,7 +44,6 @@ void *Scrivi(FILE *destinazione)
             N_block--;
         }
     }
-
     pthread_exit(NULL);
 }
 int main(int argc, char *argv[])
