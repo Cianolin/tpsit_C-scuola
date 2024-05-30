@@ -8,17 +8,19 @@ la codifica dovrà prevedere la necessaria sincronizzazione fra thread consumato
 #include <stdlib.h>
 #include <pthread.h>
 #include <stdbool.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #define BUFFER 8
 #define RING_BUFFER 4
+
 int index_write, index_read, N_block = 0;
-bool end=false;
+bool end = false;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t not_full, not_empty;
 typedef struct
 {
     int n;
-
 } RingNum;
 RingNum Num[BUFFER];
 
@@ -32,26 +34,25 @@ void *Genera(void *arg)
             pthread_cond_wait(&not_full, &mutex);
         }
         Num[index_write].n = (rand() % (500) + (1));
-        index_write = index_write++ % RING_BUFFER;
+        index_write = (index_write + 1) % RING_BUFFER;
         N_block++;
         pthread_cond_signal(&not_empty);
         pthread_mutex_unlock(&mutex);
     }
-    end=true;
-
+    end = true;
     pthread_exit(NULL);
 }
 void *Consumatore(void *arg)
 {
 
-    while (1)
+    /*while (1)
     {
-        pthread_mutex_lock(&mutex);
+        /*pthread_mutex_lock(&mutex);
         if (N_block > 0)
         {
 
             printf("%d\n", Num[index_read].n);
-            index_read = index_read++ % RING_BUFFER;
+            index_read = (index_read+1)% RING_BUFFER;
             N_block--;
             pthread_cond_signal(&not_full);
             pthread_mutex_unlock(&mutex);
@@ -62,13 +63,32 @@ void *Consumatore(void *arg)
         }
         if(end && N_block==0){
             break;
+        }*/
+    while (1)
+    {
+        pthread_mutex_lock(&mutex);
+        if (N_block == 0)
+        {
+            pthread_cond_wait(&not_empty, &mutex);
+        }
+        printf("%d\n", Num[index_read].n);
+        index_read = (index_read + 1) % RING_BUFFER;
+        N_block--;
+        pthread_cond_signal(&not_full);
+        pthread_mutex_unlock(&mutex);
+        if (N_block == 0 && end)
+        {
+            break;
         }
     }
     pthread_exit(NULL);
 }
+
+
 int main(int argv, char *argc[])
 {
     pthread_t threadA, threadB;
+    srand(getpid());
     pthread_cond_init(&not_empty, NULL);
     pthread_cond_init(&not_full, NULL);
     int n = atoi(argc[1]);
