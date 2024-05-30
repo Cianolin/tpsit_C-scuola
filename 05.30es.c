@@ -44,10 +44,9 @@ void *Genera(void *arg)
 }
 void *Consumatore(void *arg)
 {
-
-    /*while (1)
+    while (1)
     {
-        /*pthread_mutex_lock(&mutex);
+        pthread_mutex_lock(&mutex);
         if (N_block > 0)
         {
 
@@ -55,16 +54,17 @@ void *Consumatore(void *arg)
             index_read = (index_read+1)% RING_BUFFER;
             N_block--;
             pthread_cond_signal(&not_full);
-            pthread_mutex_unlock(&mutex);
         }
         else
         {
             pthread_cond_wait(&not_empty, &mutex);
         }
+        pthread_mutex_unlock(&mutex);
         if(end && N_block==0){
             break;
-        }*/
-    while (1)
+        }
+    }
+    /*while (1)
     {
         pthread_mutex_lock(&mutex);
         if (N_block == 0)
@@ -80,7 +80,7 @@ void *Consumatore(void *arg)
         {
             break;
         }
-    }
+    }*/
     pthread_exit(NULL);
 }
 
