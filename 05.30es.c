@@ -44,12 +44,11 @@ void *Genera(void *arg)
 }
 void *Consumatore(void *arg)
 {
-    while (1)
+    while (!end || N_block>0)
     {
         pthread_mutex_lock(&mutex);
         if (N_block > 0)
         {
-
             printf("%d\n", Num[index_read].n);
             index_read = (index_read+1)% RING_BUFFER;
             N_block--;
@@ -60,9 +59,7 @@ void *Consumatore(void *arg)
             pthread_cond_wait(&not_empty, &mutex);
         }
         pthread_mutex_unlock(&mutex);
-        if(end && N_block==0){
-            break;
-        }
+        
     }
     /*while (1)
     {
